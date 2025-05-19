@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException
 from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import User
-from app.dependencies.get_db import get_db
+from app.dependencies.get_db import connection
 from app.utils.tokens import SECRET_KEY, ALGORITHM
 from sqlalchemy.future import select
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -11,7 +11,7 @@ oauth2_scheme = HTTPBearer()
 
 async def get_current_user(
     token: HTTPAuthorizationCredentials = Depends(oauth2_scheme),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(connection)
 ):
     try:
         payload = jwt.decode(token.credentials, SECRET_KEY, algorithms=[ALGORITHM])
