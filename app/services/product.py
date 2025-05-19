@@ -1,8 +1,9 @@
 
 #from app.models.product import Product
 #from app.models.manufacturer import Manufacturer
-from app.crud.manufacturer import ManufacturerDAO
-from app.schemas.manufacturer import SManufacturer, SManufacturerAdd, SManufacturerUpdate, SManufacturerUpdateById, SManufacturerFilter
+#from app.crud.manufacturer import ManufacturerDAO
+from app.crud.product import ProductDAO
+from app.schemas.product import SProduct, SProductAdd, SProductFilter
 #from app.dictionaries.filtr import FiltrProduct, FiltrManufacturer
 #from app.session_maker import get_session_with_isolation
 #from app.users.router import verify_keycloak_token
@@ -11,6 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @connection(isolation_level="READ COMMITTED", commit=False)
-async def fetch_all_manufacturers(filters: SManufacturerFilter, session: AsyncSession):
-    return await ManufacturerDAO.find_all_opt(session=session, options=None, filters=filters)
+async def fetch_all_products(filters: SProductFilter, session: AsyncSession):
+    return await ProductDAO.find_all_opt(session=session, options=None, filters=filters)
 

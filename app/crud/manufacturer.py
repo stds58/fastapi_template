@@ -8,13 +8,11 @@ from sqlalchemy.orm import joinedload, class_mapper, declarative_base
 from fastapi import HTTPException
 from pydantic import BaseModel
 from app.crud.base import BaseDAO
-from app.models.product import Product
-from app.schemas.product import SProduct, SProductFilter
+from app.models.manufacturer import Manufacturer
+from app.schemas.manufacturer import SManufacturer, SManufacturerFilter
 
 
 
-class ProductDAO(BaseDAO[Product, SProductFilter]):
-    model = Product
-    pydantic_model = SProduct
-
-
+class ManufacturerDAO(BaseDAO[Manufacturer, SManufacturerFilter]):
+    model = Manufacturer
+    pydantic_model = SManufacturer

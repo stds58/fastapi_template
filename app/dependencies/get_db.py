@@ -28,7 +28,7 @@ def connection(isolation_level: Optional[str] = None, commit: bool = True):
             async with get_session_with_isolation(async_session_maker, isolation_level) as session:
                 try:
                     result = await method(*args, session=session, **kwargs)
-                    if commit:
+                    if commit and session.in_transaction():
                         await session.commit()
                     return result
                 except IntegrityError as e:
@@ -38,7 +38,8 @@ def connection(isolation_level: Optional[str] = None, commit: bool = True):
                     logger.error(f"Ошибка при работе с базой данных: {e}")
                     raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера")
                 except Exception as e:
-                    await session.rollback()
+                    if session.in_transaction():
+                        await session.rollback()
                     raise
         return wrapper
     return decorator
