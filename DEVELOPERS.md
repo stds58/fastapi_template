@@ -121,7 +121,7 @@
                      crud--->services--->api<--dependencies
                       ↑         ↑
                       │         │
-                     dto<----schemas
+                    [dto]<----schemas
 
 
 
@@ -134,4 +134,47 @@ schemas --------> dto -------> crud ---------> services --> api
 [валидация] [преобразование][работа с БД][бизнес-логика][HTTP маршруты]
 
 
+graph TD
+    A[schemas] -->|DTO based on schema| B[dto]
+    B -->|data transfer| C[crud]
+    C -->|ORM models| D[models]
+    D -->|Base| E[db]
+    E -->|config| F[core]
 
+    C -->|DB operations| G[services]
+    G -->|business logic| H[api]
+    H -->|request/response model| A
+
+    H -->|dependencies| I[dependencies]
+
+    style A fill:#FFE4B5,stroke:#333
+    style B fill:#FFD1DC,stroke:#333
+    style C fill:#E0FFFF,stroke:#333
+    style D fill:#E6E6FA,stroke:#333
+    style E fill:#DDA0DD,stroke:#333
+    style F fill:#D8BFD8,stroke:#333
+    style G fill:#98FB98,stroke:#333
+    style H fill:#87CEEB,stroke:#333
+    style I fill:#FFB6C1,stroke:#333
+
+    classDef layer fill:#fff,stroke:#333,stroke-width:2px;
+
+    class A,A schemas
+    class B dto
+    class C crud
+    class D models
+    class E db
+    class F core
+    class G services
+    class H api
+    class I dependencies
+
+    linkStyle 0 stroke:#333,fill:none;
+    linkStyle 1 stroke:#333,fill:none;
+    linkStyle 2 stroke:#333,fill:none;
+    linkStyle 3 stroke:#333,fill:none;
+    linkStyle 4 stroke:#333,fill:none;
+    linkStyle 5 stroke:#333,fill:none;
+    linkStyle 6 stroke:#333,fill:none;
+    linkStyle 7 stroke:#333,fill:none;
+    linkStyle 8 stroke:#333,fill:none;
