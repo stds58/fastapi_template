@@ -113,14 +113,16 @@
 
                       ┌────────────────────────────────┐
                       │                                │
-       alembic<----models<----db/base.py<----core      │
-                      │                        │       │
-                      │                        ↓       │
+       alembic<----models<-------db/base.py<----core   │
+                      │                          │     │
+                      │                          ↓     │
                       │ ┌────────db/session_maker.py   │
-                      ↓ ↓                          ↓   ↓
-    schemas--->dto-->crud--->services---->api<----dependencies
-        |                         ↑
-        └─────────────────────────┘
+                      ↓ ↓                        ↓     ↓
+                     crud--->services--->api<--dependencies
+                      ↑         ↑
+                      │         │
+                     dto<----schemas
+
 
 
 
