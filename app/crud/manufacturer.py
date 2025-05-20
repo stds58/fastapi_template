@@ -13,7 +13,6 @@ from app.schemas.manufacturer import SManufacturer, SManufacturerFilter
 
 
 
-
 class ManufacturerDAO(BaseDAO[Manufacturer, SManufacturerFilter]):
     model = Manufacturer
     pydantic_model = SManufacturer

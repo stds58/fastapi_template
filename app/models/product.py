@@ -2,8 +2,8 @@ from sqlalchemy import ForeignKey, text, Text, UniqueConstraint, Index, func, Ch
 from sqlalchemy.orm import relationship, Mapped, mapped_column, backref
 from typing import List, Optional
 from sqlalchemy import String, Boolean
-from app.db.base import (Base, str_uniq, int_pk, str_null_true, created_at, updated_at,
-                          bool_null_false, fk_protect_nullable)
+from app.db.base import Base, str_uniq, int_pk, str_null_true, created_at, updated_at, bool_null_false, fk_protect_nullable
+
 
 
 class Product(Base):
@@ -24,8 +24,8 @@ class Product(Base):
 
     # Обратная связь (related_name аналог)
     manufacturer: Mapped["Manufacturer"] = relationship("Manufacturer", back_populates="product")
-    subcategory: Mapped["Subcategory"] = relationship("Subcategory", back_populates="product")
-    dimension: Mapped["DimensionUnit"] = relationship("DimensionUnit", back_populates="product")
+    #subcategory: Mapped["Subcategory"] = relationship("Subcategory", back_populates="product")
+    #dimension: Mapped["DimensionUnit"] = relationship("DimensionUnit", back_populates="product")
     children = relationship("Product")
     #creator: Mapped["User"] = relationship("User", back_populates="product")
     #moderated_by: Mapped["User"] = relationship("User", back_populates="product")
@@ -54,8 +54,8 @@ class Product(Base):
                 'product_name': self.product_name,
                 'manufacturer_id': self.manufacturer_id,
                 'artikul': self.artikul,
-                'subcategory_id': self.subcategory_id,
-                'dimension_id': self.dimension_id,
+                #'subcategory_id': self.subcategory_id,
+                #'dimension_id': self.dimension_id,
                 'comment_text': self.comment_text,
                 'date_create': self.date_create,
                 'is_moderated': self.is_moderated,

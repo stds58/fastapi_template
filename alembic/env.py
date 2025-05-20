@@ -4,13 +4,34 @@ from logging.config import fileConfig
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
+from app.core.config import get_db_url
 from alembic import context
+from app.db.base import Base
 
+
+import sys
+from os.path import dirname, abspath
+
+sys.path.insert(0, dirname(dirname(abspath(__file__))))
+
+import pkgutil
+import importlib
+
+def import_all_models(package_name: str):
+    package = importlib.import_module(package_name)
+    for _, name, _ in pkgutil.walk_packages(package.__path__, package_name + "."):
+        if "models" in name:
+            print('name=== ', name)
+            importlib.import_module(name)
+            print("Tables in Base.metadata:", Base.metadata.tables.keys())
+
+import_all_models("app")
+# alembic revision --autogenerate -m "Auto-generated migration"
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
+DATABASE_URL = get_db_url()
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -20,7 +41,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -87,3 +108,4 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+

@@ -2,8 +2,7 @@ from sqlalchemy import ForeignKey, text, Text, UniqueConstraint, Index, func, Ch
 from sqlalchemy.orm import relationship, Mapped, mapped_column, backref
 from typing import List, Optional
 from sqlalchemy import String, Boolean
-from app.db.base import (Base, str_uniq, int_pk, str_null_true, created_at, updated_at,
-                          bool_null_false, fk_protect_nullable)
+from app.db.base import Base, str_uniq, int_pk, str_null_true, created_at, updated_at, bool_null_false, fk_protect_nullable
 
 
 

@@ -45,6 +45,11 @@ def connection(isolation_level: Optional[str] = None, commit: bool = True):
     return decorator
 
 
+async def get_db():
+    async with async_session_maker() as session:
+        yield session
+
+
 def connection2(isolation_level: Optional[str] = None, commit: bool = True):
     def decorator(method):
         @wraps(method)
