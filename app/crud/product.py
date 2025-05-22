@@ -9,12 +9,14 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from app.crud.base import BaseDAO
 from app.models.product import Product
-from app.schemas.product import SProduct, SProductFilter
+from app.schemas.product import SProduct, SProductAdd, SProductUpdate, SProductFilter
 
 
 
-class ProductDAO(BaseDAO[Product, SProductFilter]):
+class ProductDAO(BaseDAO[Product, SProductAdd, SProductUpdate, SProductFilter]):
     model = Product
-    pydantic_model = SProduct
+    create_schema = SProductAdd
+    update_schema = SProductUpdate
+    filter_schema = SProductFilter
 
 

@@ -7,6 +7,13 @@ from app.db.base import Base, str_uniq, int_pk, str_null_true, created_at, updat
 
 
 class Product(Base):
+    """
+    документирование класса:
+    Модель товара (продукта).
+    Хранит информацию о товарах, включая наименование, производителя,
+    артикул, комментарии и статус модерации.
+    artikul: Mapped[str_null_true] = mapped_column(comment="артикул") - описание поля будет храниться в бд
+    """
     id: Mapped[int_pk]
     product_name: Mapped[str_null_true] = mapped_column(info={"verbose_name": "наименование"})
     manufacturer_id: Mapped[int] = mapped_column(ForeignKey("manufacturer.id", ondelete="RESTRICT"), nullable=True, info={"verbose_name": "производитель"})
@@ -23,7 +30,7 @@ class Product(Base):
     parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("product.id"),nullable=True, info={"verbose_name": "псевдоним"})
 
     # Обратная связь (related_name аналог)
-    manufacturer: Mapped["Manufacturer"] = relationship("Manufacturer", back_populates="product")
+    manufacturer: Mapped["Manufacturer"] = relationship("Manufacturer", back_populates="product", lazy="selectin")
     #subcategory: Mapped["Subcategory"] = relationship("Subcategory", back_populates="product")
     #dimension: Mapped["DimensionUnit"] = relationship("DimensionUnit", back_populates="product")
     children = relationship("Product")
@@ -36,7 +43,7 @@ class Product(Base):
             func.lower("product_name"),
             "manufacturer_id",
             func.lower("artikul"),
-            "dimension_id",
+            #"dimension_id",
             unique=True
         ),
         CheckConstraint("access_id > 0", name="access_id_positive_number_check"),
@@ -48,21 +55,6 @@ class Product(Base):
     def __repr__(self):
         return (f"{self.__class__.__name__}(id={self.id}, "
                 f"name_full={self.name_full!r})")
-
-    def to_dict(self) -> dict:
-        return {'id': self.id,
-                'product_name': self.product_name,
-                'manufacturer_id': self.manufacturer_id,
-                'artikul': self.artikul,
-                #'subcategory_id': self.subcategory_id,
-                #'dimension_id': self.dimension_id,
-                'comment_text': self.comment_text,
-                'date_create': self.date_create,
-                'is_moderated': self.is_moderated,
-                'date_moderated': self.date_moderated,
-                'name_full': self.name_full,
-                'parent_id': self.parent_id
-                }
 
 
 

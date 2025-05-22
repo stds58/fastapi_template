@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Annotated, Optional
-from sqlalchemy import func, text
+from sqlalchemy import func, text, DateTime
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, declared_attr, Mapped, mapped_column
@@ -12,8 +12,10 @@ from fastapi import HTTPException
 # настройка аннотаций
 int_pk = Annotated[int, mapped_column(primary_key=True)]
 access_id = Annotated[int, mapped_column(nullable=True, info={"verbose_name": "id в аксесе Блага"})]
-created_at = Annotated[datetime, mapped_column(server_default=func.now())]
-updated_at = Annotated[datetime, mapped_column(server_default=func.now(), onupdate=func.now())]
+created_at = Annotated[datetime, mapped_column(DateTime(timezone=True), server_default=func.now())]
+updated_at = Annotated[datetime, mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())]
+deleted_at = Annotated[Optional[datetime], mapped_column(DateTime(timezone=True), default=None, nullable=True,info={"verbose_name": "дата удаления"})]
+
 str_uniq = Annotated[str, mapped_column(unique=True, nullable=False)]
 str_null_true = Annotated[str, mapped_column(nullable=True)]
 str_255 = Annotated[str, mapped_column(String(255), nullable=True)]
@@ -35,6 +37,7 @@ class Base(AsyncAttrs, DeclarativeBase):
     # id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
+    deleted_at: Mapped[deleted_at]
     access_id: Mapped[access_id]
 
     @declared_attr.directive

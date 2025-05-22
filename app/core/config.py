@@ -1,4 +1,5 @@
 import os
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 
@@ -16,9 +17,7 @@ load_dotenv()
 #     load_dotenv()
 #     #raise FileNotFoundError(f".env file not found at {dotenv_path}")
 
-
-class Settings(BaseSettings):
-    # App settings
+class AppSettings(BaseModel):
     APP_NAME: str
     DEBUG: bool
     ENV: str
@@ -26,7 +25,8 @@ class Settings(BaseSettings):
     ALGORITHM: str
     SESSION_MIDDLEWARE_SECRET_KEY: str
 
-    # Database settings
+
+class DBSettings(BaseModel):
     DB_NAME: str
     DB_USER: str
     DB_PASSWORD: str
@@ -34,7 +34,16 @@ class Settings(BaseSettings):
     DB_PORT: int
     DATABASE_URL: str
 
-    # Keycloak settings
+class TestDBSettings(BaseModel):
+    TEST_TESTING: bool
+    TEST_DB_NAME: str
+    TEST_DB_USER: str
+    TEST_DB_PASSWORD: str
+    TEST_DB_HOST: str
+    TEST_DB_PORT: int
+    TEST_DATABASE_URL: str
+
+class KeycloakSettings(BaseModel):
     KEYCLOAK_URL: str
     KEYCLOAK_REALM: str
     KEYCLOAK_CLIENT_ID: str
@@ -50,25 +59,41 @@ class Settings(BaseSettings):
     SSO_SESSION_MAX_LIFESPAN: int
     SSO_SESSION_IDLE_TIMEOUT: int
 
+current_dir = os.path.dirname(os.path.abspath(__file__))  # app/core/
+parent_dir = os.path.dirname(current_dir)                 # app/
+project_dir = os.path.dirname(parent_dir)                 # fastapi_template/
+env_path = os.path.join(project_dir, ".env")
+print(f"пути в проекте\n"
+      f"current_dir {current_dir}\n"
+      f"parent_dir {parent_dir}\n"
+      f"project_dir {project_dir}\n"
+      f"env_path {env_path}")
+
+class Settings(BaseSettings):
+    app: AppSettings
+    db: DBSettings
+    test: TestDBSettings
+    keycloak: KeycloakSettings
+
     model_config = SettingsConfigDict(
-        env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
+        #env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"),
+        env_file=env_path,
+        env_nested_delimiter="__",
     )
-
-    # Это стиль Pydantic v1 или старые версии Pydantic v2 , совместимый с предыдущими версиями
-    # class Config:
-    #     env_file = ".env"
-    #     env_file_encoding = "utf-8"
-
 
 settings = Settings()
 
 #print(settings.model_dump())
 
-def get_db_url():
-    return (f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASSWORD}@"
-            f"{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}")
+def get_db_url(testing: bool = False):
+    if testing:
+        return (f"postgresql+asyncpg://{settings.test.TEST_DB_USER}:{settings.test.TEST_DB_PASSWORD}@"
+                f"{settings.test.TEST_DB_HOST}:{settings.test.TEST_DB_PORT}/{settings.test.TEST_DB_NAME}")
+    else:
+        return (f"postgresql+asyncpg://{settings.db.DB_USER}:{settings.db.DB_PASSWORD}@"
+                f"{settings.db.DB_HOST}:{settings.db.DB_PORT}/{settings.db.DB_NAME}")
 
 def get_auth_data():
-    return {"secret_key": settings.SECRET_KEY, "algorithm": settings.ALGORITHM}
+    return {"secret_key": settings.db.SECRET_KEY, "algorithm": settings.db.ALGORITHM}
 
 

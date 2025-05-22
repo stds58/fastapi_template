@@ -9,10 +9,11 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from app.crud.base import BaseDAO
 from app.models.manufacturer import Manufacturer
-from app.schemas.manufacturer import SManufacturer, SManufacturerFilter
+from app.schemas.manufacturer import SManufacturer, SManufacturerFilter, SManufacturerAdd, SManufacturerUpdate
 
 
-
-class ManufacturerDAO(BaseDAO[Manufacturer, SManufacturerFilter]):
+class ManufacturerDAO(BaseDAO[Manufacturer, SManufacturerAdd, SManufacturerUpdate, SManufacturerFilter]):
     model = Manufacturer
-    pydantic_model = SManufacturer
+    create_schema = SManufacturerAdd
+    update_schema = SManufacturerUpdate
+    filter_schema = SManufacturerFilter

@@ -7,7 +7,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from fastapi import HTTPException
-from app.db.session_maker import async_session_maker, get_session_with_isolation
+from app.db.session import async_session_maker, get_session_with_isolation
 import logging
 
 
@@ -21,6 +21,7 @@ def connection(isolation_level: Optional[str] = None, commit: bool = True):
     """
     Декоратор для управления сессией с возможностью настройки уровня изоляции и коммита.
     Декоратор не должен быть асинхронным , он просто создаёт обёртку вокруг асинхронной функции.
+    Для декорирования функций с логикой коммита / отката
     """
     def decorator(method: Callable[..., Any]):
         @wraps(method)
@@ -45,9 +46,23 @@ def connection(isolation_level: Optional[str] = None, commit: bool = True):
     return decorator
 
 
+_custom_engine = None
+
+def set_test_engine(engine):
+    global _custom_engine
+    _custom_engine = engine
+
 async def get_db():
-    async with async_session_maker() as session:
+    global _custom_engine
+    engine = _custom_engine or create_async_engine(get_db_url())
+    async_session = async_sessionmaker(engine)
+    async with async_session() as session:
         yield session
+
+# async def get_db():
+#     """	Для интеграции с FastAPI как зависимость"""
+#     async with async_session_maker() as session:
+#         yield session
 
 
 def connection2(isolation_level: Optional[str] = None, commit: bool = True):

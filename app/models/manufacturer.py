@@ -11,7 +11,7 @@ class Manufacturer(Base):
     manufacturer_name: Mapped[str] = mapped_column(info={"verbose_name": "производитель"})
     is_valid: Mapped[bool_null_false] = mapped_column(info={"verbose_name": "производитель работает"})
 
-    product: Mapped[List["Product"]] = relationship("Product", back_populates="manufacturer")
+    product: Mapped[List["Product"]] = relationship("Product", back_populates="manufacturer", lazy="selectin")
 
     __table_args__ = (
         Index('uix_manufacturer_name_lower', func.lower(column('manufacturer_name')), unique=True),
@@ -25,9 +25,5 @@ class Manufacturer(Base):
     def __repr__(self):
         return str(self)
 
-    def to_dict(self) -> dict:
-        return {'id': self.id,
-                'manufacturer_name': self.manufacturer_name,
-                'is_valid': self.is_valid
-                }
+
 

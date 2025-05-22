@@ -27,7 +27,7 @@ async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 @asynccontextmanager
 async def get_session_with_isolation(session_factory, isolation_level: Optional[str] = None) -> AsyncGenerator[AsyncSession, None]:
     """
-    Контекстный менеджер для создания сессии с опциональным уровнем изоляции.
+    Контекстный менеджер для создания сессии с опциональным уровнем изоляции.Для гибкого управления уровнем изоляции
     """
     async with session_factory() as session:
         if isolation_level:

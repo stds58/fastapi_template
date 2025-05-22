@@ -9,10 +9,10 @@ from alembic import context
 from app.db.base import Base
 
 
-import sys
-from os.path import dirname, abspath
-
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
+# import sys
+# from os.path import dirname, abspath
+#
+# sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 import pkgutil
 import importlib
