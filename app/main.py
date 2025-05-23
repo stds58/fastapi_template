@@ -11,9 +11,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, insert
 from sqlalchemy import text
 #from app  all import connection, Product, get_db
-from app.api.v1.product import router as router_product
+from app.api.v1.base_router import v1_router
 
-app = FastAPI(debug=settings.DEBUG)
+
+#app = FastAPI(debug=settings.DEBUG)
+app = FastAPI(debug=settings.app.DEBUG, title="API", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,7 +25,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router_product)
+# http://localhost:8000/api/v1/dictionaries/manufacturers/all/
+# Подключаем версию API
+app.include_router(v1_router, prefix="/api")
 
 @app.get("/test")
 def test():
@@ -36,15 +40,15 @@ def test():
 #     items = result.scalars().all()
 #     return items
 
-@connection(isolation_level="READ COMMITTED", commit=False)
-async def get_products(session: AsyncSession = None):
-    result = await session.execute(select(Product))
-    return result.scalars().all()
-
-@app.get("/items/")
-async def read_items():
-    items = await get_products()
-    return {"data": items}
+# @connection(isolation_level="READ COMMITTED", commit=False)
+# async def get_products(session: AsyncSession = None):
+#     result = await session.execute(select(Product))
+#     return result.scalars().all()
+#
+# @app.get("/items/")
+# async def read_items():
+#     items = await get_products()
+#     return {"data": items}
 
 
 # @app.get("/items/", response_model=list[ItemResponse])

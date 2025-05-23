@@ -35,11 +35,7 @@ from sqlalchemy.orm import joinedload, class_mapper, declarative_base, Declarati
 from fastapi import HTTPException
 from pydantic import BaseModel as PydanticModel
 from app.db.base import Base
-import logging
 
-
-
-logger = logging.getLogger(__name__)
 
 assert issubclass(Base, DeclarativeBase)
 
