@@ -6,9 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 #router = APIRouter()
-router = APIRouter(prefix='/dictionaries', tags=['справочник'])
+router = APIRouter()
 
-@router.get("/products")
+@router.get("/all")
 async def get_products(filters: SProductFilter = Depends(), session: AsyncSession = Depends(connection)):
     products = await fetch_all_products(filters=filters, session=session)
     return {"data": products}

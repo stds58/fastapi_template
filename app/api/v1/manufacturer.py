@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 router = APIRouter()
 
 @router.get("/all")
-async def get_products(filters: SManufacturerFilter = Depends(), session: AsyncSession = Depends(connection)):
+async def get_manufacturers(filters: SManufacturerFilter = Depends(), session: AsyncSession = Depends(connection(isolation_level="READ COMMITTED", commit=False))):
     manufacturers = await fetch_all_manufacturers(filters=filters, session=session)
     return {"data": manufacturers}
 

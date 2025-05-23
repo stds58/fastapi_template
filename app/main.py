@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -12,10 +12,13 @@ from sqlalchemy import select, insert
 from sqlalchemy import text
 #from app  all import connection, Product, get_db
 from app.api.v1.base_router import v1_router
-
-
+from fastapi.responses import JSONResponse
+import traceback
+import logging
+logging.basicConfig(level=logging.DEBUG)
 #app = FastAPI(debug=settings.DEBUG)
 app = FastAPI(debug=settings.app.DEBUG, title="API", version="0.1.0")
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -76,4 +79,5 @@ def test():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", reload=True)
+    uvicorn.run("main:app", reload=True, host="localhost", port=8000)
+    #uvicorn.run("main:app", reload=True)

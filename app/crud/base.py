@@ -44,6 +44,7 @@ ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=PydanticModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=PydanticModel)
 FilterSchemaType = TypeVar("FilterSchemaType", bound=PydanticModel)
+PydanticModelType = TypeVar("PydanticModelType", bound=PydanticModel)
 
 class SoftDeleteMixin:
     model: type[DeclarativeBase]  # Должен быть переопределен в потомке
@@ -78,11 +79,12 @@ class FiltrMixin:
         return query.filter_by(**filter_dict)
 
 
-class BaseDAO(SoftDeleteMixin, FiltrMixin, Generic[ModelType, CreateSchemaType, UpdateSchemaType, FilterSchemaType]):
+class BaseDAO(SoftDeleteMixin, FiltrMixin, Generic[ModelType, CreateSchemaType, UpdateSchemaType, FilterSchemaType, PydanticModelType]):
     model: ClassVar[type[ModelType]]
     create_schema: ClassVar[type[CreateSchemaType]]
     update_schema: ClassVar[type[UpdateSchemaType]]
     filter_schema: ClassVar[type[FilterSchemaType]]
+    pydantic_model: ClassVar[type[PydanticModelType]]
 
     @classmethod
     async def find_all(cls, session: AsyncSession, filters: FilterSchemaType) -> List[ModelType]:
@@ -104,6 +106,7 @@ class BaseDAO(SoftDeleteMixin, FiltrMixin, Generic[ModelType, CreateSchemaType, 
         result = await session.execute(query)
         results = result.unique().scalars().all()  # Получаем все записи
         return [cls.pydantic_model.model_validate(obj, from_attributes=True) for obj in results]
+
 
     @classmethod
     async def find_all_stream(cls,

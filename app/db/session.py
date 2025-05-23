@@ -10,7 +10,11 @@ from fastapi import HTTPException
 from dotenv import load_dotenv
 
 load_dotenv()
+import logging
 
+
+
+logger = logging.getLogger(__name__)
 # create_async_engine: создаёт асинхронное подключение к базе данных PostgreSQL, используя драйвер asyncpg.
 # async_session_maker: создаёт фабрику асинхронных сессий, используя созданный движок.
 # Сессии используются для выполнения транзакций в базе данных.

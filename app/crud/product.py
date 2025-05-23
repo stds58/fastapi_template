@@ -13,10 +13,11 @@ from app.schemas.product import SProduct, SProductAdd, SProductUpdate, SProductF
 
 
 
-class ProductDAO(BaseDAO[Product, SProductAdd, SProductUpdate, SProductFilter]):
+class ProductDAO(BaseDAO[Product, SProductAdd, SProductUpdate, SProductFilter, SProduct]):
     model = Product
     create_schema = SProductAdd
     update_schema = SProductUpdate
     filter_schema = SProductFilter
+    pydantic_model = SProduct
 
 

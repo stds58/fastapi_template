@@ -12,8 +12,9 @@ from app.models.manufacturer import Manufacturer
 from app.schemas.manufacturer import SManufacturer, SManufacturerFilter, SManufacturerAdd, SManufacturerUpdate
 
 
-class ManufacturerDAO(BaseDAO[Manufacturer, SManufacturerAdd, SManufacturerUpdate, SManufacturerFilter]):
+class ManufacturerDAO(BaseDAO[Manufacturer, SManufacturerAdd, SManufacturerUpdate, SManufacturerFilter, SManufacturer]):
     model = Manufacturer
     create_schema = SManufacturerAdd
     update_schema = SManufacturerUpdate
     filter_schema = SManufacturerFilter
+    pydantic_model = SManufacturer

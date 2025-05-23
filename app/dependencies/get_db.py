@@ -17,33 +17,65 @@ logger = logging.getLogger(__name__)
 
 #def connection = def get_db
 
+# def connection2(isolation_level: Optional[str] = None, commit: bool = True):
+#     """
+#     Декоратор для управления сессией с возможностью настройки уровня изоляции и коммита.
+#     Декоратор не должен быть асинхронным , он просто создаёт обёртку вокруг асинхронной функции.
+#     Для декорирования функций с логикой коммита / отката
+#     """
+#     def decorator(method: Callable[..., Any]):
+#         print('111111111111')
+#         @wraps(method)
+#         async def wrapper(*args, **kwargs):
+#             print('222222222222')
+#             async with get_session_with_isolation(async_session_maker, isolation_level) as session:
+#                 try:
+#                     print('33333333333')
+#                     result = await method(*args, session=session, **kwargs)
+#                     if commit and session.in_transaction():
+#                         await session.commit()
+#                     return result
+#                 except IntegrityError as e:
+#                     print('444444444')
+#                     logger.error(f"Ошибка целостности данных: {e.orig}")
+#                     raise HTTPException(status_code=400, detail=f"Ошибка целостности данных: {e.orig}")
+#                 except SQLAlchemyError as e:
+#                     print('55555555555')
+#                     logger.error(f"Ошибка при работе с базой данных: {e}")
+#                     raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера")
+#                 except Exception as e:
+#                     print('6666666666')
+#                     if session.in_transaction():
+#                         await session.rollback()
+#                     raise
+#
+#         print('7777777777')
+#         return wrapper
+#     return decorator
+
+
 def connection(isolation_level: Optional[str] = None, commit: bool = True):
     """
-    Декоратор для управления сессией с возможностью настройки уровня изоляции и коммита.
-    Декоратор не должен быть асинхронным , он просто создаёт обёртку вокруг асинхронной функции.
-    Для декорирования функций с логикой коммита / отката
+    Фабрика зависимости для FastAPI, создающая асинхронную сессию с заданным уровнем изоляции.
     """
-    def decorator(method: Callable[..., Any]):
-        @wraps(method)
-        async def wrapper(*args, **kwargs):
-            async with get_session_with_isolation(async_session_maker, isolation_level) as session:
-                try:
-                    result = await method(*args, session=session, **kwargs)
-                    if commit and session.in_transaction():
-                        await session.commit()
-                    return result
-                except IntegrityError as e:
-                    logger.error(f"Ошибка целостности данных: {e.orig}")
-                    raise HTTPException(status_code=400, detail=f"Ошибка целостности данных: {e.orig}")
-                except SQLAlchemyError as e:
-                    logger.error(f"Ошибка при работе с базой данных: {e}")
-                    raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера")
-                except Exception as e:
-                    if session.in_transaction():
-                        await session.rollback()
-                    raise
-        return wrapper
-    return decorator
+
+    async def dependency() -> AsyncGenerator[AsyncSession, None]:
+        async with get_session_with_isolation(async_session_maker, isolation_level) as session:
+            try:
+                yield session
+                if commit and session.in_transaction():
+                    await session.commit()
+            except IntegrityError as e:
+                await session.rollback()
+                raise HTTPException(status_code=400, detail=f"Ошибка целостности данных: {e.orig}")
+            except SQLAlchemyError as e:
+                await session.rollback()
+                raise HTTPException(status_code=500, detail=f"Ошибка БД: {e}")
+            except Exception:
+                await session.rollback()
+                raise
+
+    return dependency
 
 
 _custom_engine = None

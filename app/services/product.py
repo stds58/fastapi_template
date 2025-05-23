@@ -11,7 +11,7 @@ from app.dependencies.get_db import connection
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-@connection(isolation_level="READ COMMITTED", commit=False)
+#@connection(isolation_level="READ COMMITTED", commit=False)
 async def fetch_all_products(filters: SProductFilter, session: AsyncSession):
     # Пример бизнес-логики: проверка прав пользователя, дополнительная обработка
     # if not await check_user_permissions(...):
