@@ -25,12 +25,13 @@ engine = create_async_engine(DATABASE_URL)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 @asynccontextmanager
-async def get_session_with_isolation(session_factory, isolation_level: Optional[str] = None) -> AsyncGenerator[AsyncSession, None]:
+async def get_session_with_isolation(session_factory, isolation_level: Optional[str] = None): # -> AsyncGenerator[AsyncSession, None]:
     """
     Контекстный менеджер для создания сессии с опциональным уровнем изоляции.Для гибкого управления уровнем изоляции
     """
     async with session_factory() as session:
         if isolation_level:
+            print('isolation_level',isolation_level)
             await session.connection(execution_options={"isolation_level": isolation_level})
             # Проверяем уровень изоляции
             result = await session.execute(text("SHOW TRANSACTION ISOLATION LEVEL;"))

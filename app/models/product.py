@@ -52,9 +52,12 @@ class Product(Base):
         Index("name_full_idx", func.lower("name_full")),
     )
 
+    def __str__(self):
+        return f"{self.__class__.__name__}(id={self.id}, name_full={self.name_full!r})"
+
     def __repr__(self):
-        return (f"{self.__class__.__name__}(id={self.id}, "
-                f"name_full={self.name_full!r})")
+        return f"<{self.__class__.__name__} id={self.id}>"
+
 
 
 

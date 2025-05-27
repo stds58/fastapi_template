@@ -63,11 +63,11 @@ current_dir = os.path.dirname(os.path.abspath(__file__))  # app/core/
 parent_dir = os.path.dirname(current_dir)                 # app/
 project_dir = os.path.dirname(parent_dir)                 # fastapi_template/
 env_path = os.path.join(project_dir, ".env")
-print(f"пути в проекте\n"
-      f"current_dir {current_dir}\n"
-      f"parent_dir {parent_dir}\n"
-      f"project_dir {project_dir}\n"
-      f"env_path {env_path}")
+# print(f"пути в проекте\n"
+#       f"current_dir {current_dir}\n"
+#       f"parent_dir {parent_dir}\n"
+#       f"project_dir {project_dir}\n"
+#       f"env_path {env_path}")
 
 class Settings(BaseSettings):
     app: AppSettings

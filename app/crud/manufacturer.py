@@ -17,3 +17,4 @@ class ManufacturerDAO(BaseDAO[Manufacturer, SManufacturerAdd, SManufacturerUpdat
     create_schema = SManufacturerAdd
     update_schema = SManufacturerUpdate
     filter_schema = SManufacturerFilter
+    pydantic_model = SManufacturer

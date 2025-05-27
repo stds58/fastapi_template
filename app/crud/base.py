@@ -94,7 +94,7 @@ class BaseDAO(SoftDeleteMixin, FiltrMixin, Generic[ModelType, CreateSchemaType, 
         return result.scalars().all()
 
     @classmethod
-    async def find_all_opt(cls, session: AsyncSession, options: Optional[List[Any]] = None, filters: FilterSchemaType = None) -> List[PydanticModel]:
+    async def find_all_opt(cls, session: AsyncSession, options: Optional[List[Any]] = None, filters: Optional[FilterSchemaType] = None) -> List[PydanticModel]:
         query = select(cls.model)
         query = cls._apply_soft_delete(query)
         if filters is not None:

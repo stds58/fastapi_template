@@ -19,11 +19,10 @@ class Manufacturer(Base):
     )
 
     def __str__(self):
-        return (f"{self.__class__.__name__}(id={self.id}, "
-                f"manufacturer_name={self.manufacturer_name!r})")
+        return f"{self.__class__.__name__}(id={self.id}, manufacturer_name={self.manufacturer_name!r})"
 
     def __repr__(self):
-        return str(self)
+        return f"<{self.__class__.__name__} id={self.id}>"
 
 
 

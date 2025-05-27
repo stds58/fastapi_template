@@ -8,14 +8,18 @@ from app.schemas.base import BaseConfigModel, BaseFilter
 
 
 class SManufacturer(BaseConfigModel):
-    id: int
-    manufacturer_name: str = Field(..., description="производитель",alias="manufacturer_name_alias")
-    is_valid: bool = Field(..., description="производитель работает", exclude=True) # exclude=True Исключение полей из сериализации
-    #product: List[Optional['SProduct']] = Field(None, description="вложенная схема Product")
+    id: Optional[int] = None
+    manufacturer_name: Optional[str] = None
+    is_valid: Optional[bool] = None
 
-    @computed_field
-    def full_name(self) -> str:
-        return f"{self.manufacturer_name} - {self.is_valid}"
+    # id: int
+    # manufacturer_name: str = Field(..., description="производитель",alias="manufacturer_name_alias")
+    # is_valid: bool = Field(..., description="производитель работает", exclude=True) # exclude=True Исключение полей из сериализации
+    # #product: List[Optional['SProduct']] = Field(None, description="вложенная схема Product")
+
+    # @computed_field
+    # def full_name(self) -> str:
+    #     return f"{self.manufacturer_name} - {self.is_valid}"
 
 
 class SManufacturerAdd(BaseConfigModel):
@@ -33,8 +37,8 @@ class SManufacturerUpdateById(BaseConfigModel):
     is_valid: bool = Field(..., description="производитель работает")
 
 class SManufacturerFilter(BaseFilter):
-    id: Optional[int] = None
-    manufacturer_name: Optional[str] = None
-    is_valid: Optional[bool] = None
+    id: Optional[int] = Field(default=None)
+    manufacturer_name: Optional[str] = Field(default=None)
+    is_valid: Optional[bool] = Field(default=None)
 
 

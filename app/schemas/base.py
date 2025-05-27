@@ -21,7 +21,8 @@ class BaseConfigModel(BaseModel):
 class BaseFilter(BaseModel):
     model_config = ConfigDict(
         str_strip_whitespace=True,
-        extra="forbid"  # Запретить передачу лишних полей
+        extra="ignore"  # ← Позволяет игнорировать лишние поля
+        #extra="forbid"  # Запретить передачу лишних полей
     )
 
 
