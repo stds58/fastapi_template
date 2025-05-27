@@ -1,0 +1,11 @@
+<form method="post">
+{% for name, field in fields.items() %}
+    <label>{{ field.description or name }}</label><br>
+    {% if field.annotation == 'bool' %}
+        <input type="checkbox" name="{{ name }}"><br><br>
+    {% else %}
+        <input type="text" name="{{ name }}" required><br><br>
+    {% endif %}
+{% endfor %}
+<input type="submit" value="Сохранить">
+</form>

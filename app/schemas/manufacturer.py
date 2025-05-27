@@ -26,6 +26,12 @@ class SManufacturerAdd(BaseConfigModel):
     manufacturer_name: str = Field(..., description="производитель")
     is_valid: bool = Field(..., description="производитель работает")
 
+    @model_validator(mode="after")
+    def check_is_valid(self):
+        if not isinstance(self.is_valid, bool):
+            raise ValueError("Поле 'is_valid' должно быть true или false")
+        return self
+
 
 class SManufacturerUpdate(BaseConfigModel):
     manufacturer_name: Optional[str] = None

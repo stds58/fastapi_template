@@ -12,6 +12,7 @@ from sqlalchemy import select, insert
 from sqlalchemy import text
 #from app  all import connection, Product, get_db
 from app.api.v1.base_router import v1_router
+from app.api.v2.base_router import v2_router
 
 
 #app = FastAPI(debug=settings.DEBUG)
@@ -28,6 +29,7 @@ app.add_middleware(
 # http://localhost:8000/api/v1/dictionaries/manufacturers/all/
 # Подключаем версию API
 app.include_router(v1_router, prefix="/api")
+app.include_router(v2_router, prefix="/front")
 
 @app.get("/test")
 def test():

@@ -29,11 +29,12 @@ def connection(isolation_level: Optional[str] = None, commit: bool = True):
             except IntegrityError as e:
                 if session.in_transaction():
                     await session.rollback()
-                raise HTTPException(status_code=400, detail=f"Ошибка целостности данных: {e.orig}") from e
+                await session.rollback()
+                raise e # HTTPException(status_code=400, detail=f"Ошибка целостности данных: {e.orig}") from e
             except SQLAlchemyError as e:
                 if session.in_transaction():
                     await session.rollback()
-                raise HTTPException(status_code=500, detail=f"Ошибка БД: {e.orig}") from e
+                raise e # HTTPException(status_code=500, detail=f"Ошибка БД: {e}") from e
             except Exception as e:
                 if session.in_transaction():
                     await session.rollback()
