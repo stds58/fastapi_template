@@ -11,10 +11,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def fetch_all_manufacturers(filters: SManufacturerFilter, session: AsyncSession):
-    print('filters========',filters)
     # Пример бизнес-логики: проверка прав пользователя, дополнительная обработка
     # if not await check_user_permissions(...):
     #     raise HTTPException(status_code=403, detail="Нет доступа")
     manufacturers = await ManufacturerDAO.find_all_opt(session=session, options=None, filters=filters)
     return manufacturers
+
+async def add_manufacturer(data: SManufacturerAdd, session: AsyncSession):
+    manufacturer = await ManufacturerDAO.add(session=session, **data.model_dump())
+    return manufacturer
+
+
 
