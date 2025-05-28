@@ -10,6 +10,7 @@ from pathlib import Path
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 from asyncpg.exceptions import UniqueViolationError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError, OperationalError
 
 
 V2_DIR = Path(__file__).resolve().parent
@@ -86,6 +87,17 @@ async def put_manufacturer(request: Request, session: AsyncSession = Depends(con
             print('error_msg ',error_msg)
 
         # Передаём ошибку в шаблон
+        return templates.TemplateResponse("dynamic_form.html", {
+            "request": request,
+            "fields": SManufacturerAdd.model_fields,
+            "title": "Добавить производителя",
+            "form_values": dict(form_data),
+            "errors": [{"loc": ["База данных"], "msg": error_msg}]
+        })
+
+    except (ConnectionRefusedError, OSError, OperationalError) as e:
+        await session.rollback()
+        error_msg = str(e)
         return templates.TemplateResponse("dynamic_form.html", {
             "request": request,
             "fields": SManufacturerAdd.model_fields,
